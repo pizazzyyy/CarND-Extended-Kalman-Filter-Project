@@ -9,6 +9,8 @@ using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
+#define PI 3.14159265
+
 // Create a tools instance
 Tools tools;
 
@@ -78,6 +80,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   z_pred << (c2), atan2(py, px), (c3/c2);
 
   VectorXd y = z - z_pred;
+
+  while(y[1] > PI || y[1] < -PI)
+    {
+      if(y[1] > PI)
+        y[1]-=PI;
+      else y[1]+=PI;
+    }
+
   MatrixXd Ht = Hj.transpose();
   MatrixXd S = Hj * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
